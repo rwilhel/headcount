@@ -4,7 +4,7 @@ class District
 
   attr_reader :name
 
-  def initialize(row)
-    @name = row[:location]
+  def initialize(args)
+    @name = args[:name]
   end
 end

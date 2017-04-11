@@ -10,10 +10,9 @@ class DistrictRepository
   end
 
   def find_by_name(name)
-    # binding.pry
     contents.each do |row|
       if row[:location] == name
-        district = District.new(row)
+        district = District.new({name: name})
         return district
       end
     end
