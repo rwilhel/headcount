@@ -17,8 +17,18 @@ class DistrictRepositoryTest < Minitest::Test
 
     downcase_district = dr.find_by_name("academy 20")
     assert_equal "ACADEMY 20", downcase_district.name
+  end
 
-    # assert_equal 7, dr.find_all_matching("WE").count
+  def test_find_all_matching
+    dr = DistrictRepository.new
+    dr.load_data({
+      :enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv"
+      }
+    })
+
+    assert_equal 7, dr.find_all_matching("WE").count
+    assert_equal 7, dr.find_all_matching("we").count
   end
 
 end
