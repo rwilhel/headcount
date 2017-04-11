@@ -25,13 +25,6 @@ class DistrictRepository
     name_fragment = name_fragment.upcase
     districts = []
     all.each do |row|
-      # if the row name includes the fragment
-        # if districts is empty
-          # add that district to districts
-        # elsif districts does not contain a district with that name
-          # add that district to districts
-        # elsif districts contains a district with that same name
-          #do nothing and move on.
       if row[:location].include?(name_fragment)
         if districts.empty?
           district = District.new({name: row[:location]})
