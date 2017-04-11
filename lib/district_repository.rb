@@ -10,6 +10,7 @@ class DistrictRepository
   end
 
   def find_by_name(name)
+    name = name.upcase
     contents.each do |row|
       if row[:location] == name
         district = District.new({name: name})
