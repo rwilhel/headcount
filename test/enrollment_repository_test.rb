@@ -1,4 +1,4 @@
-require 'minitest/test'
+require 'minitest/autorun'
 require './lib/enrollment_repository'
 
 class EnrollmentRepositoryTest < Minitest::Test

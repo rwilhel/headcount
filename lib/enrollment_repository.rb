@@ -1,4 +1,5 @@
 require 'csv'
+require_relative 'enrollment'
 
 class EnrollmentRepository
   attr_reader :all
