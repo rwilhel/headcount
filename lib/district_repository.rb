@@ -19,6 +19,7 @@ class DistrictRepository
         return district
       end
     end
+    return nil
   end
 
   def find_all_matching(name_fragment)

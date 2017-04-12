@@ -17,6 +17,8 @@ class DistrictRepositoryTest < Minitest::Test
 
     downcase_district = dr.find_by_name("academy 20")
     assert_equal "ACADEMY 20", downcase_district.name
+
+    assert_nil dr.find_by_name("FOO BAR")
   end
 
   def test_find_all_matching
@@ -29,6 +31,6 @@ class DistrictRepositoryTest < Minitest::Test
 
     assert_equal 7, dr.find_all_matching("WE").count
     assert_equal 7, dr.find_all_matching("we").count
+    assert_equal [], dr.find_all_matching("foo bar")
   end
-
 end
