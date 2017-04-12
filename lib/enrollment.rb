@@ -14,4 +14,9 @@ class Enrollment
     end
     kindergarten_participation
   end
+
+  def kindergarten_participation_in_year(year)
+    raw_number = kindergarten_participation[year]
+    formatted_number = (((raw_number*1000).floor).to_f)/1000
+  end
 end
