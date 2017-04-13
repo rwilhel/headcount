@@ -33,4 +33,24 @@ class HeadcountAnalyst
     end
     average_participation = sum/count
   end
+
+  def kindergarten_participation_rate_variation_trend(district_name, comparison_district_hash)
+    district_repository.load_data({:enrollment => {:kindergarten => "./data/Kindergartners in full-day program.csv"}})
+
+    district = district_repository.find_by_name(district_name)
+    enrollment_by_year = district.enrollment.kindergarten_participation
+
+    comparison_district = district_repository.find_by_name(comparison_district_hash[:against])
+    comparison_enrollment_by_year = comparison_district.enrollment.kindergarten_participation
+
+    results = {}
+
+    enrollment_by_year.each do |key, value|
+      comparison_value = comparison_enrollment_by_year[key]
+      result = value / comparison_value
+      result = (((result*1000).floor).to_f)/1000
+      results[key] = result
+    end
+    results = Hash[results.sort_by {|key, value| key.to_i}]
+  end
 end
