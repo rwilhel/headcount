@@ -27,4 +27,9 @@ class Enrollment
     end
     high_school_graduation
   end
+
+  def graduation_rate_in_year(year)
+    raw_number = high_school_graduation[year]
+    formatted_number = (((raw_number*1000).floor).to_f)/1000
+  end
 end
