@@ -13,9 +13,7 @@ class EnrollmentRepository
     name = name.upcase
     enrollment_year_and_data = {}
     all.each do |row|
-      if row[:location] == name
-        # populate a hash where the key is a year and the value is the statistic
-        # for that year
+      if row[:location].upcase == name
         data = row[:data].to_f
         key = row[:timeframe].to_i
         enrollment_year_and_data[key] = data

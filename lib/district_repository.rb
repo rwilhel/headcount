@@ -14,7 +14,7 @@ class DistrictRepository
   def find_by_name(name)
     name = name.upcase
     all.each do |row|
-      if row[:location] == name
+      if row[:location].upcase == name
         district = District.new({name: row[:location]})
         return district
       end
@@ -26,7 +26,7 @@ class DistrictRepository
     name_fragment = name_fragment.upcase
     districts = []
     all.each do |row|
-      if row[:location].include?(name_fragment)
+      if row[:location].upcase.include?(name_fragment)
         if districts.empty?
           district = District.new({name: row[:location]})
           districts << district
