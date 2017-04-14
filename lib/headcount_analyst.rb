@@ -9,30 +9,30 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_rate_variation(district_name, comparison_district_hash)
-    average_participation = average_participation_for(district_name)
+    average_participation = average_kindergarten_participation_for(district_name)
 
     comparison_district_name = comparison_district_hash[:against]
-    comparison_average_participation = average_participation_for(comparison_district_name)
+    comparison_average_participation = average_kindergarten_participation_for(comparison_district_name)
 
     ratio = average_participation / comparison_average_participation
     ratio = (((ratio*1000).floor).to_f)/1000
   end
 
-  def average_participation_for(district_name)
+  def average_kindergarten_participation_for(district_name)
     district = district_repository.find_by_name(district_name)
     enrollment_by_year = district.enrollment.kindergarten_participation_by_year
     average_participation = get_average(enrollment_by_year)
     average_participation = (((average_participation*1000).floor).to_f)/1000
   end
 
-  def get_average(enrollment_by_year)
+  def get_average(data_by_year)
     sum = 0
     count = 0
-    enrollment_by_year.each_value do |value|
+    data_by_year.each_value do |value|
       sum += value
       count += 1
     end
-    average_participation = sum/count
+    average_data = sum/count
   end
 
   def kindergarten_participation_rate_variation_trend(district_name, comparison_district_hash)
@@ -60,5 +60,20 @@ class HeadcountAnalyst
       results[key] = result
     end
     results
+  end
+
+  def average_high_school_graduation_rate_for(district_name)
+    district = district_repository.find_by_name(district_name)
+    graduation_rate_by_year = district.enrollment.graduation_rate_by_year
+    average_graduation_rate = get_average(graduation_rate_by_year)
+    average_graduation_rate = (((average_graduation_rate*1000).floor).to_f)/1000
+  end
+
+  def kindergarten_participation_against_high_school_graduation(district_name)
+    #divide kindergarten participation by statewide average
+    kindergarten_variation = kindergarten_participation_rate_variation(district_name, {:against => "COLORADO"})
+    graduation_variation =
+    #we have the average high school graduation rate for a district and we need to find the state average graduation rate
+    #we will divide those numbers
   end
 end

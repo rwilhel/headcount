@@ -19,7 +19,7 @@ class HeadcountAnalystTest < Minitest::Test
     assert_equal expected_result, ha.kindergarten_participation_rate_variation_trend('ACADEMY 20', :against => 'COLORADO')
   end
 
-  def test_high_school_versus_kindergarten_analysis
+  def test_kindergarten_participation_against_high_school_graduation
     dr = DistrictRepository.new
     dr.load_data({:enrollment => {:kindergarten => "./data/Kindergartners in full-day program.csv",
                                   :high_school_graduation => "./data/High school graduation rates.csv"}})
