@@ -70,10 +70,15 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_against_high_school_graduation(district_name)
-    #divide kindergarten participation by statewide average
     kindergarten_variation = kindergarten_participation_rate_variation(district_name, {:against => "COLORADO"})
-    graduation_variation =
-    #we have the average high school graduation rate for a district and we need to find the state average graduation rate
-    #we will divide those numbers
+
+    district_graduation_rate = average_high_school_graduation_rate_for(district_name)
+    colorado_graduation_rate = average_high_school_graduation_rate_for("COLORADO")
+
+    graduation_variation = district_graduation_rate / colorado_graduation_rate
+    graduation_variation = (((graduation_variation*1000).floor).to_f)/1000
+
+    kindergarten_graduation_variance = kindergarten_variation / graduation_variation
+    kindergarten_graduation_variance = (((kindergarten_graduation_variance*1000).floor).to_f)/1000
   end
 end
