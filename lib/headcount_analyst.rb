@@ -78,16 +78,45 @@ class HeadcountAnalyst
     graduation_variation = district_graduation_rate / colorado_graduation_rate
     graduation_variation = (((graduation_variation*1000).floor).to_f)/1000
 
+    if graduation_variation == 0.0
+      return 0.0
+    end
     kindergarten_graduation_variance = kindergarten_variation / graduation_variation
     kindergarten_graduation_variance = (((kindergarten_graduation_variance*1000).floor).to_f)/1000
   end
 
   def kindergarten_participation_correlates_with_high_school_graduation(input_hash)
-    kindergarten_graduation_variance = kindergarten_participation_against_high_school_graduation(input_hash[:for])
-    if kindergarten_graduation_variance > 0.6 && kindergarten_graduation_variance < 1.5
-      return true
+    if input_hash[:for] != "STATEWIDE"
+      kindergarten_graduation_variance = kindergarten_participation_against_high_school_graduation(input_hash[:for])
+      if kindergarten_graduation_variance > 0.6 && kindergarten_graduation_variance < 1.5
+        return true
+      else
+        return false
+      end
     else
-      return false
+      correlation_counter = 0
+      district_names = get_all_districts
+      district_names.each do |name|
+        correlates = kindergarten_participation_correlates_with_high_school_graduation(:for => name)
+          if correlates
+            correlation_counter += 1
+          end
+      end
+      if correlation_counter / district_names.length > 0.7
+        return true
+      else
+        return false
+      end
     end
+  end
+
+  def get_all_districts
+    district_names = []
+    district_repository.all.each do |row|
+      if row[:location] != "Colorado" && !district_names.include?(row[:location])
+        district_names << row[:location]
+      end
+    end
+    district_names
   end
 end
