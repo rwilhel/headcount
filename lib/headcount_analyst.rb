@@ -86,14 +86,30 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_correlates_with_high_school_graduation(input_hash)
-    if input_hash[:for] != "STATEWIDE"
+    if input_hash[:for] && input_hash[:for] != "STATEWIDE"
       kindergarten_graduation_variance = kindergarten_participation_against_high_school_graduation(input_hash[:for])
       if kindergarten_graduation_variance > 0.6 && kindergarten_graduation_variance < 1.5
         return true
       else
         return false
       end
+    elsif input_hash[:across]
+      # find correlation across the several supplied districts
+      district_names = input_hash[:across]
+      correlation_counter = 0
+      district_names.each do |name|
+        correlates = kindergarten_participation_correlates_with_high_school_graduation(:for => name)
+          if correlates
+            correlation_counter += 1
+          end
+      end
+      if correlation_counter / district_names.length > 0.7
+        return true
+      else
+        return false
+      end
     else
+      # find correlation across every district
       correlation_counter = 0
       district_names = get_all_districts
       district_names.each do |name|
