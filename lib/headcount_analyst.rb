@@ -82,5 +82,12 @@ class HeadcountAnalyst
     kindergarten_graduation_variance = (((kindergarten_graduation_variance*1000).floor).to_f)/1000
   end
 
-  
+  def kindergarten_participation_correlates_with_high_school_graduation(input_hash)
+    kindergarten_graduation_variance = kindergarten_participation_against_high_school_graduation(input_hash[:for])
+    if kindergarten_graduation_variance > 0.6 && kindergarten_graduation_variance < 1.5
+      return true
+    else
+      return false
+    end
+  end
 end

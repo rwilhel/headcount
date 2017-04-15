@@ -35,9 +35,9 @@ class HeadcountAnalystTest < Minitest::Test
                                   :high_school_graduation => "./data/High school graduation rates.csv"}})
     ha = HeadcountAnalyst.new(dr)
 
-    assert ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'ACADEMY 20')
-    refute ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'MONTROSE COUNTY RE-1J')
-    refute ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'SIERRA GRANDE R-30')
-    assert ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'PARK (ESTES PARK) R-3')
+    assert ha.kindergarten_participation_correlates_with_high_school_graduation(:for => 'ACADEMY 20')
+    refute ha.kindergarten_participation_correlates_with_high_school_graduation(:for => 'MONTROSE COUNTY RE-1J')
+    refute ha.kindergarten_participation_correlates_with_high_school_graduation(:for => 'SIERRA GRANDE R-30')
+    assert ha.kindergarten_participation_correlates_with_high_school_graduation(:for => 'PARK (ESTES PARK) R-3')
   end
 end
