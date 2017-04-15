@@ -81,4 +81,6 @@ class HeadcountAnalyst
     kindergarten_graduation_variance = kindergarten_variation / graduation_variation
     kindergarten_graduation_variance = (((kindergarten_graduation_variance*1000).floor).to_f)/1000
   end
+
+  
 end
