@@ -53,6 +53,9 @@ class StatewideTestTest < Minitest::Test
       })
 
       statewide_test = str.find_by_name("ACADEMY 20")
+      assert_raises(UnknownRaceError), statewide_test.proficient_by_race_or_ethnicity(:asdf)
+
+      statewide_test = str.find_by_name("ACADEMY 20")
       expected = { 2011 => {math: 0.816, reading: 0.897, writing: 0.826},
                    2012 => {math: 0.818, reading: 0.893, writing: 0.808},
                    2013 => {math: 0.805, reading: 0.901, writing: 0.810},
