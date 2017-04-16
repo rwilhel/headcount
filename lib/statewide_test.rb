@@ -1,3 +1,5 @@
+require_relative 'custom_errors'
+
 class StatewideTest
   attr_reader :third_grade_scores, :eighth_grade_scores, :average_math_proficiency_by_ethnicity, :average_reading_proficiency_by_ethnicity, :average_writing_proficiency_by_ethnicity
   def initialize(third_grade_scores, eighth_grade_scores, average_math_proficiency_by_ethnicity, average_reading_proficiency_by_ethnicity, average_writing_proficiency_by_ethnicity)
@@ -76,5 +78,18 @@ class StatewideTest
   def save_writing_data(subject_year_score, math_reading_writing, year)
     writing_score = subject_year_score[:score]
     math_reading_writing[year][:writing] = writing_score
+  end
+
+  def proficient_by_race_or_ethnicity(race)
+    if race == :asian
+    elsif race == :black
+    elsif race == :pacific_islander
+    elsif race == :hispanic
+    elsif race == :native_american
+    elsif race == :two_or_more
+    elsif race == :white
+    else
+      raise UnknownRaceError
+    end
   end
 end
