@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require './lib/statewide_test_repository'
+require './lib/statewide_test'
 
 class StatewideTestRepositoryTest < Minitest::Test
   def test_proficiency_by_grade
@@ -14,6 +15,8 @@ class StatewideTestRepositoryTest < Minitest::Test
       }
     })
     str = str.find_by_name("ACADEMY 20")
+    assert_instance_of StatewideTest, str
+
     expected = { 2008 => {:math => 0.857, :reading => 0.866, :writing => 0.671},
                  2009 => {:math => 0.824, :reading => 0.862, :writing => 0.706},
                  2010 => {:math => 0.849, :reading => 0.864, :writing => 0.662},
