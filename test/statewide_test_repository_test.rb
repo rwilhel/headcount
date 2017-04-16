@@ -22,6 +22,6 @@ class StatewideTestRepositoryTest < Minitest::Test
                  2013 => {:math => 0.855, :reading => 0.859, :writing => 0.668},
                  2014 => {:math => 0.834, :reading => 0.831, :writing => 0.639}
                }
-    assert_equal expected, statewide_test.proficient_by_grade(3)
+    assert_equal expected, str.proficient_by_grade(3)
   end
 end
