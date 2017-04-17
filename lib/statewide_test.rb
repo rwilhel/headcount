@@ -137,4 +137,13 @@ class StatewideTest
     end
     scores_by_year
   end
+
+  def proficient_for_subject_by_grade_in_year(subject, grade, year)
+    # subject is a symbol. grade is a fixnum. year is a fixnum.
+    raise UnknownDataError if ![:math, :reading, :writing].include? subject
+    math_reading_writing_by_year = proficient_by_grade(grade)
+    score = math_reading_writing_by_year[year][subject]
+    return "N/A" if score == 0.0
+    score
+  end
 end

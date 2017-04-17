@@ -94,6 +94,7 @@ class StatewideTestTest < Minitest::Test
       }
     })
 
+    statewide_test = str.find_by_name("ACADEMY 20")
     assert_raises(UnknownDataError) {statewide_test.proficient_for_subject_by_grade_in_year(:science, 8, 2011)}
 
     statewide_test = str.find_by_name("ACADEMY 20")
