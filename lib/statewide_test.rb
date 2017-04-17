@@ -1,13 +1,14 @@
 require_relative 'custom_errors'
 
 class StatewideTest
-  attr_reader :third_grade_scores, :eighth_grade_scores, :average_math_proficiency_by_ethnicity, :average_reading_proficiency_by_ethnicity, :average_writing_proficiency_by_ethnicity
+  attr_reader :third_grade_scores, :eighth_grade_scores, :proficiency_by_ethnicity
   def initialize(third_grade_scores, eighth_grade_scores, average_math_proficiency_by_ethnicity, average_reading_proficiency_by_ethnicity, average_writing_proficiency_by_ethnicity)
     @third_grade_scores = third_grade_scores
     @eighth_grade_scores = eighth_grade_scores
-    @average_math_proficiency_by_ethnicity = average_math_proficiency_by_ethnicity
-    @average_reading_proficiency_by_ethnicity = average_reading_proficiency_by_ethnicity
-    @average_writing_proficiency_by_ethnicity = average_writing_proficiency_by_ethnicity
+    @proficiency_by_ethnicity = {}
+    @proficiency_by_ethnicity[:math] = average_math_proficiency_by_ethnicity
+    @proficiency_by_ethnicity[:reading] = average_reading_proficiency_by_ethnicity
+    @proficiency_by_ethnicity[:writing] = average_writing_proficiency_by_ethnicity
   end
 
   def proficient_by_grade(grade)
@@ -81,15 +82,41 @@ class StatewideTest
   end
 
   def proficient_by_race_or_ethnicity(race)
-    if race == :asian
-    elsif race == :black
-    elsif race == :pacific_islander
-    elsif race == :hispanic
-    elsif race == :native_american
-    elsif race == :two_or_more
-    elsif race == :white
-    else
-      raise UnknownRaceError
-    end
+raise UnknownRaceError if ![:asian, :black, :pacific_islander, :hispanic, :native_american, :two_or_more, :white].include? race
+    race = "Asian" if race == :asian
+    race = "Black" if race == :black
+    race = "Hawaiian/Pacific Islander" if race == :pacific_islander
+    race = "Hispanic" if race == :hispanic
+    race = "Native American" if race == :native_american
+    race = "Two or more" if race == :two_or_more
+    race = "White" if race == :white
+
+    results_by_subject = {}
+      # get every row of data for the asian race
+      proficiency_by_ethnicity.each do |subject, dataset|
+        results_by_subject[subject] = []
+        dataset.each do |row|
+          if row[:ethnicity] == race
+            results_by_subject[subject] << row
+          end
+        end
+      end
+      # create a hash where the key is a year and the value is an empty hash
+      final_results = {}
+      results_by_subject.each do |subject, dataset|
+        dataset.each do |ethnicity_year_score|
+          year = ethnicity_year_score[:year]
+          final_results[year] = {}
+        end
+      end
+      # for each year, fill the value hash with key value pairs for math, reading, and writing
+      results_by_subject.each do |subject, dataset|
+        dataset.each do |ethnicity_year_score|
+          year = ethnicity_year_score[:year]
+          score = ethnicity_year_score[:score]
+          final_results[year][subject] = score
+        end
+      end
+    return final_results
   end
 end
