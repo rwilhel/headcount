@@ -106,4 +106,29 @@ class StatewideTestTest < Minitest::Test
     statewide_test = str.find_by_name("PLATEAU VALLEY 50")
     assert_equal "N/A", statewide_test.proficient_for_subject_by_grade_in_year(:reading, 8, 2011)
   end
+
+  def test_proficiency_by_subject_race_and_year
+    str = StatewideTestRepository.new
+    str.load_data({
+      :statewide_testing => {
+        :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
+        :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
+        :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
+        :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
+        :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
+      }
+    })
+
+    statewide_test = str.find_by_name("AULT-HIGHLAND RE-9")
+    assert_equal 0.611, statewide_test.proficient_for_subject_by_race_in_year(:math, :white, 2012)
+    assert_equal 0.310, statewide_test.proficient_for_subject_by_race_in_year(:math, :hispanic, 2014)
+    assert_equal 0.794, statewide_test.proficient_for_subject_by_race_in_year(:reading, :white, 2013)
+    assert_equal 0.278, statewide_test.proficient_for_subject_by_race_in_year(:writing, :hispanic, 2014)
+
+    statewide_test = str.find_by_name("BUFFALO RE-4")
+    assert_equal 0.65, statewide_test.proficient_for_subject_by_race_in_year(:math, :white, 2012)
+    assert_equal 0.437, statewide_test.proficient_for_subject_by_race_in_year(:math, :hispanic, 2014)
+    assert_equal 0.76, statewide_test.proficient_for_subject_by_race_in_year(:reading, :white, 2013)
+    assert_equal 0.375, statewide_test.proficient_for_subject_by_race_in_year(:writing, :hispanic, 2014)
+  end
 end
