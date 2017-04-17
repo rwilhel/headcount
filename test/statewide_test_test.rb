@@ -94,11 +94,13 @@ class StatewideTestTest < Minitest::Test
       }
     })
 
+    assert_raises(UnknownDataError) {statewide_test.proficient_for_subject_by_grade_in_year(:science, 8, 2011)}
+
     statewide_test = str.find_by_name("ACADEMY 20")
-    assert_in_delta 0.653, statewide_test.proficient_for_subject_by_grade_in_year(:math, 8, 2011), 0.005
+    assert_equal 0.653, statewide_test.proficient_for_subject_by_grade_in_year(:math, 8, 2011)
 
     statewide_test = str.find_by_name("WRAY SCHOOL DISTRICT RD-2")
-    assert_in_delta 0.89, statewide_test.proficient_for_subject_by_grade_in_year(:reading, 3, 2014), 0.005
+    assert_equal 0.89, statewide_test.proficient_for_subject_by_grade_in_year(:reading, 3, 2014)
 
     statewide_test = str.find_by_name("PLATEAU VALLEY 50")
     assert_equal "N/A", statewide_test.proficient_for_subject_by_grade_in_year(:reading, 8, 2011)
