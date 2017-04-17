@@ -37,7 +37,7 @@ class StatewideTestTest < Minitest::Test
                }
     assert_equal expected_eighth_grade_scores, statewide_test.proficient_by_grade(8)
 
-    assert_equal nil, statewide_test.proficient_by_grade(4)
+    assert_raises(UnknownDataError) { statewide_test.proficient_by_grade(4) }
   end
 
   def test_proficiency_by_race

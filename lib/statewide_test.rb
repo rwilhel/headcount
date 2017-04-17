@@ -17,7 +17,7 @@ class StatewideTest
     elsif grade == 8
       return math_reading_writing_by_year(eighth_grade_scores)
     else
-      return nil
+      raise UnknownDataError
     end
   end
 
