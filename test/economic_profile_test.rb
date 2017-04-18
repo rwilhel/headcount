@@ -63,5 +63,7 @@ class EconomicProfileTest < Minitest::Test
     economic_profile = epr.find_by_name("ACADEMY 20")
 
     assert_equal 0.064, economic_profile.children_in_poverty_in_year(2012)
-  end
+
+    assert_raises(UnknownDataError){economic_profile.children_in_poverty_in_year(1)}
+end
 end
