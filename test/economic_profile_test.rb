@@ -31,5 +31,6 @@ class EconomicProfileTest < Minitest::Test
     economic_profile = epr.find_by_name("ACADEMY 20")
 
     assert_equal 88279, economic_profile.median_household_income_in_year(2010)
+    assert_raises(UnknownDataError){economic_profile.medimedian_household_income_in_year(1)}
   end
 end
