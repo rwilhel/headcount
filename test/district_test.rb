@@ -3,6 +3,7 @@ require 'minitest/pride'
 require './lib/district'
 require './lib/district_repository'
 
+
 class DistrictTest < Minitest::Test
   attr_reader :dr
 
@@ -28,17 +29,24 @@ class DistrictTest < Minitest::Test
     assert_equal "Colorado", district.name
   end
 
-  def test_district_enrollment_relationship_basics
+  def test_district_enrollment_relationship
     district = dr.find_by_name("GREELEY 6")
 
     assert_equal 0.042, district.enrollment.kindergarten_participation_in_year(2005)
     assert_instance_of Enrollment, district.enrollment
   end
 
-  def test_statewide_testing_relationships
+  def test_statewide_testing_relationship
     district = dr.find_by_name("ACADEMY 20")
     statewide_test = district.statewide_test
 
     assert_instance_of StatewideTest, statewide_test
+  end
+
+  def test_economic_profile_relationship
+    district = dr.find_by_name("ACADEMY 20")
+    economic_profile = district.economic_profile
+
+    assert_instance_of EconomicProfile, economic_profile
   end
 end

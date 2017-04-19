@@ -1,5 +1,6 @@
-require 'CSV'
+require 'csv'
 require 'pry'
+require_relative 'economic_profile'
 
 class EconomicProfileRepository
 
@@ -14,7 +15,7 @@ class EconomicProfileRepository
 
     free_or_reduced_price_lunch = CSV.open data[:economic_profile][:free_or_reduced_price_lunch], headers: true, header_converters: :symbol
     @information[:free_or_reduced_price_lunch] = free_or_reduced_price_lunch.to_a
-    
+
     title_i = CSV.open data[:economic_profile][:title_i], headers: true, header_converters: :symbol
     @information[:title_i] = title_i.to_a
   end
