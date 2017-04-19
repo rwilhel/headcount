@@ -1,4 +1,5 @@
 require 'pry'
+require_relative 'custom_errors'
 
 class HeadcountAnalyst
   attr_reader :district_repository
@@ -134,5 +135,9 @@ class HeadcountAnalyst
       end
     end
     district_names
+  end
+
+  def top_statewide_test_year_over_year_growth(grade_hash)
+    raise InsufficientInformationError if grade_hash[:grade].nil?
   end
 end
