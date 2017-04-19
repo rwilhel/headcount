@@ -1,4 +1,4 @@
-require './lib/custom_errors'
+require_relative 'custom_errors'
 
 class EconomicProfile
   attr_reader :data
