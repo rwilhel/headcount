@@ -34,7 +34,7 @@ class EconomicProfileRepository
           elsif data_label == :children_in_poverty
             date = row[:timeframe].to_i
             instantiation_data[:children_in_poverty][date] = row[:data].to_f
-          elsif data_label == :free_or_reduced_price_lunch && row[:poverty_level].include?(" or ")
+          elsif data_label == :free_or_reduced_price_lunch && row[:poverty_level] == "Eligible for Free or Reduced Lunch"
             date = row[:timeframe].to_i
             instantiation_data[:free_or_reduced_price_lunch][date] = {} if !instantiation_data[:free_or_reduced_price_lunch][date]
             if row[:dataformat] == "Percent"
@@ -46,10 +46,10 @@ class EconomicProfileRepository
             date = row[:timeframe].to_i
             instantiation_data[:title_i][date] = row[:data].to_f
           end
-          instantiation_data[:name] = name
         end
       end
     end
+    instantiation_data[:name] = name
     EconomicProfile.new(instantiation_data)
   end
 
