@@ -76,6 +76,7 @@ class HeadcountAnalystTest < Minitest::Test
     ha = HeadcountAnalyst.new(dr)
 
     assert_raises(InsufficientInformationError) {ha.top_statewide_test_year_over_year_growth(subject: :math)}
+    assert_raises(UnknownDataError) {ha.top_statewide_test_year_over_year_growth(grade: 9)}
 
     assert_equal "SANGRE DE CRISTO RE-22J", ha.top_statewide_test_year_over_year_growth(grade: 3).first
     assert_equal 0.071, ha.top_statewide_test_year_over_year_growth(grade: 3).last

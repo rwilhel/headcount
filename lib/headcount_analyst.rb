@@ -139,5 +139,6 @@ class HeadcountAnalyst
 
   def top_statewide_test_year_over_year_growth(grade_hash)
     raise InsufficientInformationError if grade_hash[:grade].nil?
+    raise UnknownDataError if grade_hash[:grade] != 3 && grade_hash[:grade] != 8
   end
 end
