@@ -25,17 +25,15 @@ class EnrollmentRepositoryTest < Minitest::Test
 
   def test_enrollment_repository_with_high_school_data
       er = EnrollmentRepository.new
-      er.load_data({
-                     :enrollment => {
-                       :kindergarten => "./data/Kindergartners in full-day program.csv",
-                       :high_school_graduation => "./data/High school graduation rates.csv"
-                     }
-                   })
+      er.load_data({:enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv",
+        :high_school_graduation => "./data/High school graduation rates.csv"}})
       e = er.find_by_name("MONTROSE COUNTY RE-1J")
 
       assert_equal 0.738, e.graduation_rate_in_year(2010)
 
-      expected = {2010=>0.738, 2011=>0.751, 2012=>0.777, 2013=>0.713, 2014=>0.757}
+      expected =
+      {2010=>0.738, 2011=>0.751, 2012=>0.777, 2013=>0.713, 2014=>0.757}
       assert_equal expected, e.graduation_rate_by_year
     end
 end
