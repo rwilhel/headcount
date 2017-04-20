@@ -7,16 +7,24 @@ class EconomicProfileRepository
   def load_data(data)
     @information = {}
 
-    median_household_income = CSV.open data[:economic_profile][:median_household_income], headers: true, header_converters: :symbol
+    median_household_income =
+    CSV.open data[:economic_profile][:median_household_income],
+    headers: true, header_converters: :symbol
     @information[:median_household_income] = median_household_income.to_a
 
-    children_in_poverty = CSV.open data[:economic_profile][:children_in_poverty], headers: true, header_converters: :symbol
+    children_in_poverty =
+    CSV.open data[:economic_profile][:children_in_poverty],
+    headers: true, header_converters: :symbol
     @information[:children_in_poverty] = children_in_poverty.to_a
 
-    free_or_reduced_price_lunch = CSV.open data[:economic_profile][:free_or_reduced_price_lunch], headers: true, header_converters: :symbol
+    free_or_reduced_price_lunch =
+    CSV.open data[:economic_profile][:free_or_reduced_price_lunch],
+    headers: true, header_converters: :symbol
     @information[:free_or_reduced_price_lunch] = free_or_reduced_price_lunch.to_a
 
-    title_i = CSV.open data[:economic_profile][:title_i], headers: true, header_converters: :symbol
+    title_i =
+    CSV.open data[:economic_profile][:title_i],
+    headers: true, header_converters: :symbol
     @information[:title_i] = title_i.to_a
   end
 
@@ -78,14 +86,17 @@ class EconomicProfileRepository
 
   def format_free_or_reduced_price_lunch_data(row, instantiation_data)
     date = row[:timeframe].to_i
-    instantiation_data[:free_or_reduced_price_lunch][date] = {} if !instantiation_data[:free_or_reduced_price_lunch][date]
+    instantiation_data[:free_or_reduced_price_lunch][date] = {} if
+    !instantiation_data[:free_or_reduced_price_lunch][date]
   end
 
   def format_percent_or_number_data(row, instantiation_data)
     if row[:dataformat] == "Percent"
-      instantiation_data[:free_or_reduced_price_lunch][date][:percentage] = row[:data].to_f
+      instantiation_data[:free_or_reduced_price_lunch][date][:percentage] =
+      row[:data].to_f
     elsif row[:dataformat] == "Number"
-      instantiation_data[:free_or_reduced_price_lunch][date][:total] = row[:data].to_f
+      instantiation_data[:free_or_reduced_price_lunch][date][:total] =
+      row[:data].to_f
     end
   end
 

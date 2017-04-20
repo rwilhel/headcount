@@ -30,8 +30,9 @@ class EnrollmentRepository
 
   def set_all_high_school_data(data)
     if data[:enrollment][:high_school_graduation]
-      high_school_contents = CSV.open data[:enrollment][:high_school_graduation],
-        headers: true, header_converters: :symbol
+      high_school_contents =
+      CSV.open data[:enrollment][:high_school_graduation],
+      headers: true, header_converters: :symbol
       @high_school_all = high_school_contents.to_a
     else
       @high_school_all = []
