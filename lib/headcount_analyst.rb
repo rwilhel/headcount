@@ -155,7 +155,7 @@ class HeadcountAnalyst
 
   def top_statewide_test_year_over_year_growth(input)
     grade = input[:grade]
-    subject = input[:subject].to_s.capitalize
+    subject = input[:subject].to_s.capitalize || :all
     top_amount = input[:top] || 1
     raise InsufficientInformationError if grade.nil?
     raise UnknownDataError if grade != 3 && grade != 8
@@ -171,25 +171,8 @@ class HeadcountAnalyst
     data_by_district = third_grade_raw_data.group_by do |row|
        row[:location]
     end
-    scores = {}
-    data_by_district.each do |district_name, data_for_one_district|
-      scores[district_name] = []
-      data_for_one_district.each do |row|
-        year = row[:timeframe].to_i
-        data = row[:data].to_f
-        scores[district_name] << [year, data] if row[:score] == subject
-      end
-    end
-    growth_rates = {}
-    scores.each do |district_name, year_data_pairs|
-      beginning_year = year_data_pairs.first.first
-      beginning_data = year_data_pairs.first.last
-      end_year = year_data_pairs.last.first
-      end_data = year_data_pairs.last.last
-      growth_rate = (end_data - beginning_data)/(end_year - beginning_year)
-      growth_rate = (((growth_rate*1000).floor).to_f)/1000
-      growth_rates[district_name] = growth_rate
-    end
+    scores = get_scores_for_all_districts(subject, data_by_district)
+    growth_rates = get_growth_rates_for_all_districts(scores)
     if top_amount == 1
       max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
     else
@@ -202,6 +185,17 @@ class HeadcountAnalyst
     data_by_district = eighth_grade_raw_data.group_by do |row|
        row[:location]
     end
+    scores = get_scores_for_all_districts(subject, data_by_district)
+    growth_rates = get_growth_rates_for_all_districts(scores)
+    if top_amount == 1
+      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+    else
+      sorted_growth_rates = growth_rates.sort_by {|k, v| v}
+      top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
+    end
+  end
+
+  def get_scores_for_all_districts(subject, data_by_district)
     scores = {}
     data_by_district.each do |district_name, data_for_one_district|
       scores[district_name] = []
@@ -211,6 +205,10 @@ class HeadcountAnalyst
         scores[district_name] << [year, data] if row[:score] == subject
       end
     end
+    scores
+  end
+
+  def get_growth_rates_for_all_districts(scores)
     growth_rates = {}
     scores.each do |district_name, year_data_pairs|
       beginning_year = year_data_pairs.first.first
@@ -221,11 +219,6 @@ class HeadcountAnalyst
       growth_rate = (((growth_rate*1000).floor).to_f)/1000
       growth_rates[district_name] = growth_rate
     end
-    if top_amount == 1
-      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
-    else
-      sorted_growth_rates = growth_rates.sort_by {|k, v| v}
-      top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
-    end
+    growth_rates
   end
 end
