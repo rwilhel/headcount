@@ -155,7 +155,8 @@ class HeadcountAnalyst
 
   def top_statewide_test_year_over_year_growth(input)
     grade = input[:grade]
-    subject = input[:subject].to_s.capitalize || :all
+    subject = input[:subject].to_s.capitalize
+    subject = :all if subject == ""
     top_amount = input[:top] || 1
     raise InsufficientInformationError if grade.nil?
     raise UnknownDataError if grade != 3 && grade != 8
@@ -171,10 +172,34 @@ class HeadcountAnalyst
     data_by_district = third_grade_raw_data.group_by do |row|
        row[:location]
     end
-    scores = get_scores_for_all_districts(subject, data_by_district)
-    growth_rates = get_growth_rates_for_all_districts(scores)
+    if subject == :all
+      three_subject_growth_rates = []
+      subjects = ["Math", "Reading", "Writing"]
+      subjects.each do |subject|
+        scores = get_scores_for_all_districts(subject, data_by_district)
+        growth_rates = get_growth_rates_for_all_districts(scores)
+        three_subject_growth_rates << growth_rates
+      end
+      math_growth_rates = three_subject_growth_rates[0]
+      reading_growth_rates = three_subject_growth_rates[1]
+      writing_growth_rates = three_subject_growth_rates[2]
+      growth_rates_added_for_all_subjects = {}
+      (math_growth_rates.keys | reading_growth_rates.keys | writing_growth_rates.keys).each do |key|
+        growth_rates_added_for_all_subjects[key] = math_growth_rates[key] + reading_growth_rates[key] + writing_growth_rates[key]
+      end
+      growth_rates = {}
+      growth_rates_added_for_all_subjects.each do |key, value|
+        value = value / 3
+        value = (((value*1000).floor).to_f)/1000
+        growth_rates[key] = value
+      end
+    else
+      scores = get_scores_for_all_districts(subject, data_by_district)
+      growth_rates = get_growth_rates_for_all_districts(scores)
+    end
     if top_amount == 1
       max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+      binding.pry
     else
       sorted_growth_rates = growth_rates.sort_by {|k, v| v}
       top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
@@ -185,9 +210,33 @@ class HeadcountAnalyst
     data_by_district = eighth_grade_raw_data.group_by do |row|
        row[:location]
     end
-    scores = get_scores_for_all_districts(subject, data_by_district)
-    growth_rates = get_growth_rates_for_all_districts(scores)
+    if subject == :all
+      three_subject_growth_rates = []
+      subjects = ["Math", "Reading", "Writing"]
+      subjects.each do |subject|
+        scores = get_scores_for_all_districts(subject, data_by_district)
+        growth_rates = get_growth_rates_for_all_districts(scores)
+        three_subject_growth_rates << growth_rates
+      end
+      math_growth_rates = three_subject_growth_rates[0]
+      reading_growth_rates = three_subject_growth_rates[1]
+      writing_growth_rates = three_subject_growth_rates[2]
+      growth_rates_added_for_all_subjects = {}
+      (math_growth_rates.keys | reading_growth_rates.keys | writing_growth_rates.keys).each do |key|
+        growth_rates_added_for_all_subjects[key] = math_growth_rates[key] + reading_growth_rates[key] + writing_growth_rates[key]
+      end
+      growth_rates = {}
+      growth_rates_added_for_all_subjects.each do |key, value|
+        value = value / 3
+        value = (((value*1000).floor).to_f)/1000
+        growth_rates[key] = value
+      end
+    else
+      scores = get_scores_for_all_districts(subject, data_by_district)
+      growth_rates = get_growth_rates_for_all_districts(scores)
+    end
     if top_amount == 1
+      binding.pry
       max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
     else
       sorted_growth_rates = growth_rates.sort_by {|k, v| v}

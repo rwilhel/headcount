@@ -74,16 +74,16 @@ class HeadcountAnalystTest < Minitest::Test
                  }
                })
     ha = HeadcountAnalyst.new(dr)
-
-    assert_raises(InsufficientInformationError) {ha.top_statewide_test_year_over_year_growth(subject: :math)}
-    assert_raises(UnknownDataError) {ha.top_statewide_test_year_over_year_growth(grade: 9)}
-
-    assert_equal ["SPRINGFIELD RE-4", 0.149], ha.top_statewide_test_year_over_year_growth(grade: 3, subject: :math)
-    assert_equal ["WELDON VALLEY RE-20(J)", 0.096], ha.top_statewide_test_year_over_year_growth(grade: 8, subject: :math)
-
-    assert_equal [["SPRINGFIELD RE-4", 0.149], ["WESTMINSTER 50", 0.1], ["CENTENNIAL R-1", 0.088]], ha.top_statewide_test_year_over_year_growth(grade: 3, top: 3, subject: :math)
-
-    # assert_equal "SANGRE DE CRISTO RE-22J", ha.top_statewide_test_year_over_year_growth(grade: 3).first
+    #
+    # assert_raises(InsufficientInformationError) {ha.top_statewide_test_year_over_year_growth(subject: :math)}
+    # assert_raises(UnknownDataError) {ha.top_statewide_test_year_over_year_growth(grade: 9)}
+    #
+    # assert_equal ["SPRINGFIELD RE-4", 0.149], ha.top_statewide_test_year_over_year_growth(grade: 3, subject: :math)
+    # assert_equal ["WELDON VALLEY RE-20(J)", 0.096], ha.top_statewide_test_year_over_year_growth(grade: 8, subject: :math)
+    #
+    # assert_equal [["SPRINGFIELD RE-4", 0.149], ["WESTMINSTER 50", 0.1], ["CENTENNIAL R-1", 0.088]], ha.top_statewide_test_year_over_year_growth(grade: 3, top: 3, subject: :math)
+binding.pry
+    assert_equal "SANGRE DE CRISTO RE-22J", ha.top_statewide_test_year_over_year_growth(grade: 3).first
     # assert_equal 0.071, ha.top_statewide_test_year_over_year_growth(grade: 3).last
     #
     # assert_equal "OURAY R-1", ha.top_statewide_test_year_over_year_growth(grade: 8).first
