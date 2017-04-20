@@ -156,17 +156,18 @@ class HeadcountAnalyst
   def top_statewide_test_year_over_year_growth(input)
     grade = input[:grade]
     subject = input[:subject].to_s.capitalize
+    top_amount = input[:top] || 1
     raise InsufficientInformationError if grade.nil?
     raise UnknownDataError if grade != 3 && grade != 8
     if grade == 3
-      result = get_top_third_grade_test_year_over_year_growth(subject)
+      result = get_top_third_grade_test_year_over_year_growth(subject, top_amount)
     elsif grade == 8
-      result = get_top_eighth_grade_test_year_over_year_growth(subject)
+      result = get_top_eighth_grade_test_year_over_year_growth(subject, top_amount)
     end
     result
   end
 
-  def get_top_third_grade_test_year_over_year_growth(subject)
+  def get_top_third_grade_test_year_over_year_growth(subject, top_amount)
     data_by_district = third_grade_raw_data.group_by do |row|
        row[:location]
     end
@@ -189,10 +190,15 @@ class HeadcountAnalyst
       growth_rate = (((growth_rate*1000).floor).to_f)/1000
       growth_rates[district_name] = growth_rate
     end
-    max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+    if top_amount == 1
+      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+    else
+      sorted_growth_rates = growth_rates.sort_by {|k, v| v}
+      top_growth_rates = sorted_growth_rates[-top_amount..-1]
+    end
   end
 
-  def get_top_eighth_grade_test_year_over_year_growth(subject)
+  def get_top_eighth_grade_test_year_over_year_growth(subject, top_amount)
     data_by_district = eighth_grade_raw_data.group_by do |row|
        row[:location]
     end
@@ -215,6 +221,11 @@ class HeadcountAnalyst
       growth_rate = (((growth_rate*1000).floor).to_f)/1000
       growth_rates[district_name] = growth_rate
     end
-    max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+    if top_amount == 1
+      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+    else
+      sorted_growth_rates = growth_rates.sort_by {|k, v| v}
+      top_growth_rates = sorted_growth_rates[-top_amount..-1]
+    end
   end
 end
