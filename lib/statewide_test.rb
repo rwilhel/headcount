@@ -2,7 +2,9 @@ require_relative 'custom_errors'
 
 class StatewideTest
   attr_reader :third_grade_scores, :eighth_grade_scores, :proficiency_by_race
-  def initialize(third_grade_scores, eighth_grade_scores, average_math_proficiency_by_race, average_reading_proficiency_by_race, average_writing_proficiency_by_race)
+  def initialize(third_grade_scores, eighth_grade_scores,
+    average_math_proficiency_by_race, average_reading_proficiency_by_race, 
+    average_writing_proficiency_by_race)
     @third_grade_scores = third_grade_scores
     @eighth_grade_scores = eighth_grade_scores
     @proficiency_by_race = {}
@@ -84,15 +86,18 @@ class StatewideTest
   def proficient_by_race_or_ethnicity(race)
     race = format_race(race)
 
-    data_for_one_race_by_subject = get_data_for_race_by_subject(race, proficiency_by_race)
+    data_for_one_race_by_subject = get_data_for_race_by_subject(race,
+      proficiency_by_race)
 
     scores_by_year = create_hash_with_year_keys(data_for_one_race_by_subject)
 
-    final_results = populate_data_by_subject(scores_by_year, data_for_one_race_by_subject)
+    final_results = populate_data_by_subject(scores_by_year,
+      data_for_one_race_by_subject)
   end
 
   def format_race(race)
-    raise UnknownRaceError if ![:asian, :black, :pacific_islander, :hispanic, :native_american, :two_or_more, :white].include? race
+    raise UnknownRaceError if ![:asian, :black, :pacific_islander, :hispanic,
+      :native_american, :two_or_more, :white].include? race
     race = "Asian" if race == :asian
     race = "Black" if race == :black
     race = "Hawaiian/Pacific Islander" if race == :pacific_islander
