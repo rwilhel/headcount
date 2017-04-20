@@ -194,7 +194,7 @@ class HeadcountAnalyst
       max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
     else
       sorted_growth_rates = growth_rates.sort_by {|k, v| v}
-      top_growth_rates = sorted_growth_rates[-top_amount..-1]
+      top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
     end
   end
 
@@ -225,7 +225,7 @@ class HeadcountAnalyst
       max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
     else
       sorted_growth_rates = growth_rates.sort_by {|k, v| v}
-      top_growth_rates = sorted_growth_rates[-top_amount..-1]
+      top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
     end
   end
 end
