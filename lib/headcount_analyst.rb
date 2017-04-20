@@ -2,11 +2,27 @@ require 'pry'
 require_relative 'custom_errors'
 
 class HeadcountAnalyst
-  attr_reader :district_repository
+  attr_reader :district_repository, :third_grade_raw_data, :eighth_grade_raw_data
 
   def initialize(district_repository)
     @district_repository = district_repository
     district_repository.load_data({:enrollment => {:kindergarten => "./data/Kindergartners in full-day program.csv"}})
+    initialize_statewide_test_repository
+  end
+
+  def initialize_statewide_test_repository
+    str = StatewideTestRepository.new
+    str.load_data({
+      :statewide_testing => {
+        :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
+        :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
+        :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
+        :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
+        :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
+      }
+    })
+    @third_grade_raw_data = str.third_grade_raw_data
+    @eighth_grade_raw_data = str.eighth_grade_raw_data
   end
 
   def kindergarten_participation_rate_variation(district_name, comparison_district_hash)
@@ -137,8 +153,68 @@ class HeadcountAnalyst
     district_names
   end
 
-  def top_statewide_test_year_over_year_growth(grade_hash)
-    raise InsufficientInformationError if grade_hash[:grade].nil?
-    raise UnknownDataError if grade_hash[:grade] != 3 && grade_hash[:grade] != 8
+  def top_statewide_test_year_over_year_growth(input)
+    grade = input[:grade]
+    subject = input[:subject].to_s.capitalize
+    raise InsufficientInformationError if grade.nil?
+    raise UnknownDataError if grade != 3 && grade != 8
+    if grade == 3
+      result = get_top_third_grade_test_year_over_year_growth(subject)
+    elsif grade == 8
+      result = get_top_eighth_grade_test_year_over_year_growth(subject)
+    end
+    result
+  end
+
+  def get_top_third_grade_test_year_over_year_growth(subject)
+    data_by_district = third_grade_raw_data.group_by do |row|
+       row[:location]
+    end
+    scores = {}
+    data_by_district.each do |district_name, data_for_one_district|
+      scores[district_name] = []
+      data_for_one_district.each do |row|
+        year = row[:timeframe].to_i
+        data = row[:data].to_f
+        scores[district_name] << [year, data] if row[:score] == subject
+      end
+    end
+    growth_rates = {}
+    scores.each do |district_name, year_data_pairs|
+      beginning_year = year_data_pairs.first.first
+      beginning_data = year_data_pairs.first.last
+      end_year = year_data_pairs.last.first
+      end_data = year_data_pairs.last.last
+      growth_rate = (end_data - beginning_data)/(end_year - beginning_year)
+      growth_rate = (((growth_rate*1000).floor).to_f)/1000
+      growth_rates[district_name] = growth_rate
+    end
+    max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+  end
+
+  def get_top_eighth_grade_test_year_over_year_growth(subject)
+    data_by_district = eighth_grade_raw_data.group_by do |row|
+       row[:location]
+    end
+    scores = {}
+    data_by_district.each do |district_name, data_for_one_district|
+      scores[district_name] = []
+      data_for_one_district.each do |row|
+        year = row[:timeframe].to_i
+        data = row[:data].to_f
+        scores[district_name] << [year, data] if row[:score] == subject
+      end
+    end
+    growth_rates = {}
+    scores.each do |district_name, year_data_pairs|
+      beginning_year = year_data_pairs.first.first
+      beginning_data = year_data_pairs.first.last
+      end_year = year_data_pairs.last.first
+      end_data = year_data_pairs.last.last
+      growth_rate = (end_data - beginning_data)/(end_year - beginning_year)
+      growth_rate = (((growth_rate*1000).floor).to_f)/1000
+      growth_rates[district_name] = growth_rate
+    end
+    max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
   end
 end
