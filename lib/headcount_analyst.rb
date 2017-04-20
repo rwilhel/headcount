@@ -2,11 +2,13 @@ require 'pry'
 require_relative 'custom_errors'
 
 class HeadcountAnalyst
-  attr_reader :district_repository, :third_grade_raw_data, :eighth_grade_raw_data
+  attr_reader :district_repository, :third_grade_raw_data,
+    :eighth_grade_raw_data
 
   def initialize(district_repository)
     @district_repository = district_repository
-    district_repository.load_data({:enrollment => {:kindergarten => "./data/Kindergartners in full-day program.csv"}})
+    district_repository.load_data({:enrollment => {:kindergarten =>
+      "./data/Kindergartners in full-day program.csv"}})
     initialize_statewide_test_repository
   end
 
@@ -25,12 +27,13 @@ class HeadcountAnalyst
     @eighth_grade_raw_data = str.eighth_grade_raw_data
   end
 
-  def kindergarten_participation_rate_variation(district_name, comparison_district_hash)
-    average_participation = average_kindergarten_participation_for(district_name)
-
+  def kindergarten_participation_rate_variation(district_name,
+    comparison_district_hash)
+    average_participation =
+      average_kindergarten_participation_for(district_name)
     comparison_district_name = comparison_district_hash[:against]
-    comparison_average_participation = average_kindergarten_participation_for(comparison_district_name)
-
+    comparison_average_participation =
+      average_kindergarten_participation_for(comparison_district_name)
     ratio = average_participation / comparison_average_participation
     ratio = (((ratio*1000).floor).to_f)/1000
   end
@@ -52,14 +55,14 @@ class HeadcountAnalyst
     average_data = sum/count
   end
 
-  def kindergarten_participation_rate_variation_trend(district_name, comparison_district_hash)
+  def kindergarten_participation_rate_variation_trend(district_name,
+    comparison_district_hash)
     enrollment_by_year = district_enrollment_by_year(district_name)
-
     comparison_district_name = comparison_district_hash[:against]
-    comparison_enrollment_by_year = district_enrollment_by_year(comparison_district_name)
-
-    results = get_ratio_for_each_year(enrollment_by_year, comparison_enrollment_by_year)
-
+    comparison_enrollment_by_year =
+      district_enrollment_by_year(comparison_district_name)
+    results = get_ratio_for_each_year(enrollment_by_year,
+      comparison_enrollment_by_year)
     results = Hash[results.sort_by {|key, value| key.to_i}]
   end
 
@@ -87,25 +90,28 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_against_high_school_graduation(district_name)
-    kindergarten_variation = kindergarten_participation_rate_variation(district_name, {:against => "COLORADO"})
-
-    district_graduation_rate = average_high_school_graduation_rate_for(district_name)
-    colorado_graduation_rate = average_high_school_graduation_rate_for("COLORADO")
-
+    kindergarten_variation =
+      kindergarten_participation_rate_variation(district_name,
+      {:against => "COLORADO"})
+    district_graduation_rate =
+      average_high_school_graduation_rate_for(district_name)
+    colorado_graduation_rate =
+      average_high_school_graduation_rate_for("COLORADO")
     graduation_variation = district_graduation_rate / colorado_graduation_rate
     graduation_variation = (((graduation_variation*1000).floor).to_f)/1000
-
-    if graduation_variation == 0.0
-      return 0.0
-    end
-    kindergarten_graduation_variance = kindergarten_variation / graduation_variation
-    kindergarten_graduation_variance = (((kindergarten_graduation_variance*1000).floor).to_f)/1000
+    return 0.0 if graduation_variation == 0.0
+    kindergarten_graduation_variance = kindergarten_variation /
+      graduation_variation
+    kindergarten_graduation_variance =
+      (((kindergarten_graduation_variance*1000).floor).to_f)/1000
   end
 
   def kindergarten_participation_correlates_with_high_school_graduation(input_hash)
     if input_hash[:for] && input_hash[:for] != "STATEWIDE"
-      kindergarten_graduation_variance = kindergarten_participation_against_high_school_graduation(input_hash[:for])
-      if kindergarten_graduation_variance > 0.6 && kindergarten_graduation_variance < 1.5
+      kindergarten_graduation_variance =
+      kindergarten_participation_against_high_school_graduation(input_hash[:for])
+      if kindergarten_graduation_variance > 0.6
+         && kindergarten_graduation_variance < 1.5
         return true
       else
         return false
@@ -115,10 +121,10 @@ class HeadcountAnalyst
       district_names = input_hash[:across]
       correlation_counter = 0
       district_names.each do |name|
-        correlates = kindergarten_participation_correlates_with_high_school_graduation(:for => name)
-          if correlates
-            correlation_counter += 1
-          end
+        correlates =
+        kindergarten_participation_correlates_with_high_school_graduation(:for
+        => name)
+        correlation_counter += 1 if correlates
       end
       if correlation_counter / district_names.length > 0.7
         return true
@@ -130,10 +136,10 @@ class HeadcountAnalyst
       correlation_counter = 0
       district_names = get_all_districts
       district_names.each do |name|
-        correlates = kindergarten_participation_correlates_with_high_school_graduation(:for => name)
-          if correlates
-            correlation_counter += 1
-          end
+        correlates =
+          kindergarten_participation_correlates_with_high_school_graduation(:for
+          => name)
+        correlation_counter += 1 if correlates
       end
       if correlation_counter / district_names.length > 0.7
         return true
@@ -146,7 +152,8 @@ class HeadcountAnalyst
   def get_all_districts
     district_names = []
     district_repository.all.each do |row|
-      if row[:location] != "Colorado" && !district_names.include?(row[:location])
+      if row[:location] != "Colorado"
+      && !district_names.include?(row[:location])
         district_names << row[:location]
       end
     end
@@ -161,9 +168,11 @@ class HeadcountAnalyst
     raise InsufficientInformationError if grade.nil?
     raise UnknownDataError if grade != 3 && grade != 8
     if grade == 3
-      result = get_top_third_grade_test_year_over_year_growth(subject, top_amount)
+      result = get_top_third_grade_test_year_over_year_growth(subject,
+        top_amount)
     elsif grade == 8
-      result = get_top_eighth_grade_test_year_over_year_growth(subject, top_amount)
+      result = get_top_eighth_grade_test_year_over_year_growth(subject,
+        top_amount)
     end
     result
   end
@@ -184,8 +193,10 @@ class HeadcountAnalyst
       reading_growth_rates = three_subject_growth_rates[1]
       writing_growth_rates = three_subject_growth_rates[2]
       growth_rates_added_for_all_subjects = {}
-      (math_growth_rates.keys | reading_growth_rates.keys | writing_growth_rates.keys).each do |key|
-        growth_rates_added_for_all_subjects[key] = math_growth_rates[key] + reading_growth_rates[key] + writing_growth_rates[key]
+      (math_growth_rates.keys | reading_growth_rates.keys |
+      writing_growth_rates.keys).each do |key|
+        growth_rates_added_for_all_subjects[key] = math_growth_rates[key] +
+          reading_growth_rates[key] + writing_growth_rates[key]
       end
       growth_rates = {}
       growth_rates_added_for_all_subjects.each do |key, value|
@@ -198,8 +209,8 @@ class HeadcountAnalyst
       growth_rates = get_growth_rates_for_all_districts(scores)
     end
     if top_amount == 1
-      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
-      binding.pry
+      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value|
+        value }
     else
       sorted_growth_rates = growth_rates.sort_by {|k, v| v}
       top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
@@ -222,8 +233,10 @@ class HeadcountAnalyst
       reading_growth_rates = three_subject_growth_rates[1]
       writing_growth_rates = three_subject_growth_rates[2]
       growth_rates_added_for_all_subjects = {}
-      (math_growth_rates.keys | reading_growth_rates.keys | writing_growth_rates.keys).each do |key|
-        growth_rates_added_for_all_subjects[key] = math_growth_rates[key] + reading_growth_rates[key] + writing_growth_rates[key]
+      (math_growth_rates.keys | reading_growth_rates.keys |
+        writing_growth_rates.keys).each do |key|
+        growth_rates_added_for_all_subjects[key] = math_growth_rates[key] +
+        reading_growth_rates[key] + writing_growth_rates[key]
       end
       growth_rates = {}
       growth_rates_added_for_all_subjects.each do |key, value|
@@ -236,8 +249,8 @@ class HeadcountAnalyst
       growth_rates = get_growth_rates_for_all_districts(scores)
     end
     if top_amount == 1
-      binding.pry
-      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value| value }
+      max_growth_district_and_growth_rate = growth_rates.max_by { |key, value|
+        value }
     else
       sorted_growth_rates = growth_rates.sort_by {|k, v| v}
       top_growth_rates = sorted_growth_rates[-top_amount..-1].reverse
