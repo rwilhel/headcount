@@ -20,7 +20,8 @@ class EconomicProfileRepository
     free_or_reduced_price_lunch =
     CSV.open data[:economic_profile][:free_or_reduced_price_lunch],
     headers: true, header_converters: :symbol
-    @information[:free_or_reduced_price_lunch] = free_or_reduced_price_lunch.to_a
+    @information[:free_or_reduced_price_lunch] =
+      free_or_reduced_price_lunch.to_a
 
     title_i =
     CSV.open data[:economic_profile][:title_i],
@@ -57,7 +58,8 @@ class EconomicProfileRepository
       format_median_household_income_data(row, instantiation_data)
     when :children_in_poverty
       format_children_in_poverty_data(row, instantiation_data)
-    when :free_or_reduced_price_lunch && is_eligible_for_free_or_reduced_lunch?(row)
+    when :free_or_reduced_price_lunch &&
+          is_eligible_for_free_or_reduced_lunch?(row)
       format_free_or_reduced_price_lunch_data(row, instantiation_data)
       format_percent_or_number_data(row, instantiation_data)
     when :title_i

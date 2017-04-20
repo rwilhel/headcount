@@ -3,7 +3,7 @@ require_relative 'custom_errors'
 class StatewideTest
   attr_reader :third_grade_scores, :eighth_grade_scores, :proficiency_by_race
   def initialize(third_grade_scores, eighth_grade_scores,
-    average_math_proficiency_by_race, average_reading_proficiency_by_race, 
+    average_math_proficiency_by_race, average_reading_proficiency_by_race,
     average_writing_proficiency_by_race)
     @third_grade_scores = third_grade_scores
     @eighth_grade_scores = eighth_grade_scores
