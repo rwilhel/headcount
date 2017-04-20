@@ -106,24 +106,24 @@ class HeadcountAnalyst
       (((kindergarten_graduation_variance*1000).floor).to_f)/1000
   end
 
-  def kindergarten_participation_correlates_with_high_school_graduation(input_hash)
-    if input_hash[:for] && input_hash[:for] != "STATEWIDE"
+  def kindergarten_participation_correlates_with_high_school_graduation(input)
+    if input[:for] && input[:for] != "STATEWIDE"
       kindergarten_graduation_variance =
-      kindergarten_participation_against_high_school_graduation(input_hash[:for])
-      if kindergarten_graduation_variance > 0.6
-         && kindergarten_graduation_variance < 1.5
+      kindergarten_participation_against_high_school_graduation(input[:for])
+      if kindergarten_graduation_variance > 0.6 &&
+         kindergarten_graduation_variance < 1.5
         return true
       else
         return false
       end
-    elsif input_hash[:across]
+    elsif input[:across]
       # find correlation across the several supplied districts
-      district_names = input_hash[:across]
+      district_names = input[:across]
       correlation_counter = 0
       district_names.each do |name|
         correlates =
-        kindergarten_participation_correlates_with_high_school_graduation(:for
-        => name)
+        kindergarten_participation_correlates_with_high_school_graduation(
+          :for => name)
         correlation_counter += 1 if correlates
       end
       if correlation_counter / district_names.length > 0.7
@@ -137,8 +137,8 @@ class HeadcountAnalyst
       district_names = get_all_districts
       district_names.each do |name|
         correlates =
-          kindergarten_participation_correlates_with_high_school_graduation(:for
-          => name)
+          kindergarten_participation_correlates_with_high_school_graduation(
+          :for => name)
         correlation_counter += 1 if correlates
       end
       if correlation_counter / district_names.length > 0.7
@@ -152,8 +152,8 @@ class HeadcountAnalyst
   def get_all_districts
     district_names = []
     district_repository.all.each do |row|
-      if row[:location] != "Colorado"
-      && !district_names.include?(row[:location])
+      if row[:location] != "Colorado" &&
+         !district_names.include?(row[:location])
         district_names << row[:location]
       end
     end
